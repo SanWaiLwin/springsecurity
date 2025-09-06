@@ -16,15 +16,15 @@ import org.springframework.security.web.authentication.password.HaveIBeenPwnedRe
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
-@Profile("!prod")
 @Configuration
-public class ProjectSecurityConfig {
+@Profile("prod")
+public class ProjectSecurityProdConfig {
 
     @Bean
     @Order(SecurityProperties.BASIC_AUTH_ORDER)
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
         http.sessionManagement(smc -> smc.invalidSessionUrl("/invalidSession"))
-                .requiresChannel(rcc -> rcc.anyRequest().requiresInsecure()) //Only HTTP
+                .requiresChannel(rcc -> rcc.anyRequest().requiresSecure()) //Only HTTPS
                 .csrf(csrfConfig -> csrfConfig.disable())
                 .authorizeHttpRequests((requests) -> requests
                 .requestMatchers("/myAccount", "/myBalance", "/myCards", "/myLoans").authenticated()
